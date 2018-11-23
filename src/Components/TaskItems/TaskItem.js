@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from '../../actions/index';
 
 // import Data
 import listOfUsers from '../../Models/UserModel/UserModel'
 
 class TaskItem extends Component {
-    
+
 
     getLabelColor = (label) => {
         switch (label) {
@@ -110,6 +112,7 @@ class TaskItem extends Component {
                         className="btn btn-outline-danger"
                         data-toggle="modal"
                         data-target="#modalTask"
+                        onClick={this.props.handleEdit.bind(this, task)}
                     >Sửa</button>
 
                     <div className="form-group d-inline ml-2">
@@ -117,7 +120,7 @@ class TaskItem extends Component {
                             className="form-control d-inline"
                             style={{ width: "65%" }}
                             name="selectedStatus"
-                        >   
+                        >
                             <option defaultValue >Chọn trạng thái</option>
                             <option value={1} >Đang tiến hành</option>
                             <option value={2} >Chưa bắt đầu</option>
@@ -134,4 +137,12 @@ class TaskItem extends Component {
     }
 }
 
-export default TaskItem;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        handleEdit: (task) => {
+            dispatch(actions.editTask(task))
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(TaskItem);

@@ -11,3 +11,10 @@ export const listAll = () => {
         type: types.LIST_ALL
     }
 }
+
+export const editTask = (taskEditing) => {
+    return {
+        type: types.EDIT_TASK,
+        taskEditing: taskEditing
+    }
+}

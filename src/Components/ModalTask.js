@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Checkbox, CheckboxGroup } from 'react-checkbox-group';
+import { connect } from 'react-redux';
 
 class ModalTask extends Component {
     constructor(props) {
@@ -10,7 +11,7 @@ class ModalTask extends Component {
             labelArr: [],
             priority: 1,
             memberIDArr: [],
-            status: 1,
+            status: 2,
             description: ''
         }
     }
@@ -32,9 +33,37 @@ class ModalTask extends Component {
             labelArr: [],
             priority: 1,
             memberIDArr: [],
-            status: 1,
+            status: 2,
             description: ''
         })
+    }
+
+    // componentDidUpdate = (prevProps) => {
+    //     let { id, name, labelArr, priority, memberIDArr, status, description } = this.props.taskEditing
+    //     if (this.props.taskEditing !== prevProps.taskEditing) {
+    //         this.setState({
+    //             id, name, labelArr, priority, memberIDArr, status, description
+    //         })
+    //     }
+    // }
+
+    componentWillReceiveProps = (nextProps) => {
+        if (nextProps && nextProps.taskEditing) {
+            let { id, name, labelArr, priority, memberIDArr, status, description } = nextProps.taskEditing;
+            this.setState({
+                id, name, labelArr, priority, memberIDArr, status, description
+            })
+        } else {
+            this.setState({
+                id: '',
+                name: '',
+                labelArr: [],
+                priority: 1,
+                memberIDArr: [],
+                status: 2,
+                description: ''
+            })
+        }
     }
 
     render() {
@@ -156,4 +185,10 @@ class ModalTask extends Component {
     }
 }
 
-export default (ModalTask);
+const mapStateToProps = (state) => {
+    return {
+        taskEditing: state.taskEditing
+    }
+}
+
+export default connect(mapStateToProps)(ModalTask);
