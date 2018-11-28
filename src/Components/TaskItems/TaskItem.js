@@ -6,6 +6,12 @@ import * as actions from '../../actions/index';
 import listOfUsers from '../../Models/UserModel/UserModel'
 
 class TaskItem extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedStatus: 2
+        }
+    }
 
 
     getLabelColor = (label) => {
@@ -27,8 +33,13 @@ class TaskItem extends Component {
         this.setState({
             [event.target.name]: event.target.value
         }, () => {
-            this.props.changeStatus(this.props.task.id, this.state.selectedStatus);
+            this.props.handleEditStatus(this.props.task.id, this.state.selectedStatus);
         })
+    }
+
+    handleClick = task => {
+        this.props.handleEdit(task);
+        this.props.convertAddToEdit();
     }
 
     render() {
@@ -112,7 +123,7 @@ class TaskItem extends Component {
                         className="btn btn-outline-danger"
                         data-toggle="modal"
                         data-target="#modalTask"
-                        onClick={this.props.handleEdit.bind(this, task)}
+                        onClick={this.handleClick.bind(this, task)}
                     >Sửa</button>
 
                     <div className="form-group d-inline ml-2">
@@ -120,8 +131,9 @@ class TaskItem extends Component {
                             className="form-control d-inline"
                             style={{ width: "65%" }}
                             name="selectedStatus"
+                            value={task.status}
+                            onChange={this.onChange}
                         >
-                            <option defaultValue >Chọn trạng thái</option>
                             <option value={1} >Đang tiến hành</option>
                             <option value={2} >Chưa bắt đầu</option>
                             <option value={3} >Hoàn thành</option>
@@ -140,7 +152,13 @@ class TaskItem extends Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         handleEdit: (task) => {
-            dispatch(actions.editTask(task))
+            dispatch(actions.getTaskEditing(task));
+        },
+        convertAddToEdit: () => {
+            dispatch(actions.convertAddToEdit());
+        },
+        handleEditStatus: (id, status) => {
+            dispatch(actions.editTaskStatus(id, status));
         }
     }
 }

@@ -8,7 +8,7 @@ import Controls from './Components/Controls';
 import FilterString from './Components/Controls/FilterString';
 
 // Data
-import listOfTasks from './Models/TaskModel/TaskModel'; 
+// import listOfTasks from './Models/TaskModel/TaskModel';
 
 class App extends Component {
   render() {
@@ -28,16 +28,14 @@ class App extends Component {
                       <h3 className="text-left ml-2 ">Danh sách công việc</h3>
                     </div>
                   </div>
-                  
+
                   {/* FilterString */}
                   <FilterString />
-                  
+
                 </div>
               </div>
-              
-              <TaskList 
-                // tasks={listOfTasks.list}
-              />
+
+              <TaskList />
             </div>
           </div>
         </div>

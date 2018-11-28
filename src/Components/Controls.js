@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import * as actions from '../actions/index';
+import { connect } from 'react-redux';
+import * as types from '../Constants/actionType';
 
 import AddNewTask from './Controls/AddNewTask';
 import InitializeTasks from './Controls/InitializeTasks';
@@ -6,7 +9,11 @@ import FilterStatus from './Controls/FilterStatus';
 import FilterPriority from './Controls/FilterPriority';
 import FilterLabel from './Controls/FilterLabel';
 
-export default class Controls extends Component {
+class Controls extends Component {
+    onChange = event => {
+        this.props.sort(event.target.value);
+    }
+
     render() {
         return (
             <div className="col-md-3 text-center px-0">
@@ -34,9 +41,9 @@ export default class Controls extends Component {
 
                     <div className="form-group text-left">
                         <label>Sắp xếp theo công việc</label>
-                        <select className="form-control">
-                            <option>Từ A đến Z</option>
-                            <option>Từ Z đến A</option>
+                        <select className="form-control" onChange={this.onChange}>
+                            <option value='a-z'>Từ A đến Z</option>
+                            <option value='z-a'>Từ Z đến A</option>
                         </select>
                     </div>
                 </div>
@@ -44,3 +51,13 @@ export default class Controls extends Component {
         )
     }
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        sort: (filter) => {
+            dispatch(actions.filter(types.SORT, filter));
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Controls);

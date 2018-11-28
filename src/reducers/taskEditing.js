@@ -11,10 +11,12 @@ const initState = {
 }
 
 const reducer = (state = initState, action) => {
-    if (action.type === types.EDIT_TASK) {
-        return action.taskEditing;
+    switch (action.type) {
+        case types.GET_TASK_EDITING:
+            return action.taskEditing;
+        default:
+            return state;
     }
-    return state;
 }
 
 export default reducer;

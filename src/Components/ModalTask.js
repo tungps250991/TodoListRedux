@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import randomID from 'random-id';
 import { Checkbox, CheckboxGroup } from 'react-checkbox-group';
 import { connect } from 'react-redux';
+import * as actions from '../actions/index';
 
 class ModalTask extends Component {
     constructor(props) {
@@ -24,6 +26,16 @@ class ModalTask extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
+        if (this.props.isAddNewTask) {
+            this.setState({
+                id: randomID(5)
+            }, () => {
+                this.props.handleAddTask(this.state);
+            })
+        } else {
+            this.props.handleEditTask(this.state);
+        }
+
     }
 
     onReset = () => {
@@ -48,21 +60,11 @@ class ModalTask extends Component {
     // }
 
     componentWillReceiveProps = (nextProps) => {
-        if (nextProps && nextProps.taskEditing) {
-            let { id, name, labelArr, priority, memberIDArr, status, description } = nextProps.taskEditing;
-            this.setState({
-                id, name, labelArr, priority, memberIDArr, status, description
-            })
+        if (nextProps && nextProps.taskEditing && !nextProps.isAddNewTask) {
+            let { taskEditing } = nextProps;
+            this.setState(taskEditing)
         } else {
-            this.setState({
-                id: '',
-                name: '',
-                labelArr: [],
-                priority: 1,
-                memberIDArr: [],
-                status: 2,
-                description: ''
-            })
+            this.onReset();
         }
     }
 
@@ -74,7 +76,7 @@ class ModalTask extends Component {
                         {/* Modal Header */}
                         <div className="modal-header">
                             <h4 className="modal-title">
-                                Thêm công việc
+                                {this.props.isAddNewTask ? "Thêm công việc" : "Sửa công việc"}
                             </h4>
                             <button type="button" className="close" data-dismiss="modal">
                                 ×
@@ -152,10 +154,10 @@ class ModalTask extends Component {
                             <div className="modal-footer">
                                 <button
                                     type="submit"
-                                    className="btn btn-success"
+                                    className={`btn btn-${this.props.isAddNewTask ? "success" : "warning"}`}
                                 >
-                                    Thêm công việc
-                            </button>
+                                    {this.props.isAddNewTask ? "Thêm công việc" : "Sửa công việc"}
+                                </button>
 
                                 <button
                                     type="button"
@@ -173,9 +175,9 @@ class ModalTask extends Component {
         );
     }
 
-    membersChanged = (newMemberss) => {
+    membersChanged = (newMembers) => {
         this.setState({
-            memberIDArr: newMemberss
+            memberIDArr: newMembers
         });
     }
     labelsChanged = (newLabels) => {
@@ -187,8 +189,20 @@ class ModalTask extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        taskEditing: state.taskEditing
+        taskEditing: state.taskEditing,
+        isAddNewTask: state.isAddNewTask
     }
 }
 
-export default connect(mapStateToProps)(ModalTask);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        handleAddTask: (newTask) => {
+            dispatch(actions.addTask(newTask));
+        },
+        handleEditTask: (taskEditing) => {
+            dispatch(actions.editTask(taskEditing));
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ModalTask);
